@@ -35,7 +35,6 @@ class Player:
                 self.bullets.append(Bullet(self.screen, self.rect.center[0], self.rect.center[1]))
                 self.lastTimeShoot = self.current_time
 
-        print(len(self.bullets))
         for index in range(len(self.bullets)):
             self.bullets[index].update()
             self.bullets[index].draw()

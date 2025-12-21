@@ -1,7 +1,9 @@
 import pygame
+import os
 from config.gameModes import GameModes
 from entities.button import Button
 from entities.player import Player
+from entities.enemie import EnemieManage
 
 pygame.init()
 
@@ -9,16 +11,15 @@ class Game:
     def __init__(self):
         self.display = pygame.display.set_mode((500, 500))
         pygame.display.set_caption("Space invaders - Miquéias game")
+        self.logoImage = pygame.image.load(os.path.join("..", "midia", "img","logo.png"))
 
         self.game_mode = GameModes.MENU
         self.tick = pygame.time.Clock()
 
-        self.buttonStart = Button(self.display, 250, 350, 150, 50)
+        self.buttonStart = Button(self.display, 250, 350, 150, 50, selectedColor="green")
         self.buttonGoMenu = Button(self.display, 420, 25, 100, 25, defaultColor="cyan", selectedColor="blue")
         self.player = Player(self.display)
-
-
-
+        self.enemies = EnemieManage(self.display)
 
     def run(self):
         running = True
@@ -38,7 +39,8 @@ class Game:
             pygame.display.update()
 
     def menuScreen(self):
-        self.display.fill((0,255,0))
+        self.display.fill((0,0,0))
+        self.display.blit(self.logoImage, (90, 50))
         self.buttonStart.draw()
         self.buttonStart.update()
 
@@ -50,13 +52,16 @@ class Game:
 
         self.buttonGoMenu.update()
         self.player.update()
+        self.enemies.update()
 
+        self.enemies.draw()
         self.buttonGoMenu.draw()
         self.player.draw()
 
         if self.buttonGoMenu.clicked():
             self.game_mode = GameModes.MENU
             self.player.reset()
+            self.enemies.reset()
 
 
 if __name__ == "__main__":
