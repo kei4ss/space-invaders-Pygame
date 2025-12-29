@@ -11,7 +11,7 @@ class Enemie:
     def __init__(self, display, x, y):
         self.rect = pygame.Rect(x, y, 30, 30)
         self.display = display
-        self.speed = 25
+        self.speed = 30
         self.enemieColor = (0, 204, 255)
         self.border = None
 
@@ -42,9 +42,10 @@ class ShooterEnemie(Enemie):
         super().__init__(display, x, y)
         self.enemieColor = (255, 0, 153)
         self.lastTimeShoot = pygame.time.get_ticks()
+        self.timeToShoot = random.randint(3000, 10000)
 
     def draw(self):
-        if pygame.time.get_ticks() - self.lastTimeShoot >= random.randint(3000, 10000):
+        if pygame.time.get_ticks() - self.lastTimeShoot >= self.timeToShoot:
             BulletManager.addBullet(Bullet(self.display, self.rect.centerx, self.rect.centery, createBy=self, targets=[Player],  toUp=False))
             self.lastTimeShoot = pygame.time.get_ticks()
         super().draw()
@@ -54,7 +55,8 @@ class ShooterEnemie(Enemie):
 class EnemieManage:
     def __init__(self, display):
         self.board = Stage.STAGE_1.value
-        self.currentPhase = 1
+        self.currentPhase = 0
+        self.arrivedFinalStage = False
         self.initalPos = (0, 50)
         self.display = display
 
@@ -65,7 +67,6 @@ class EnemieManage:
         self.needDown = False
 
         self.enemies = []
-        self.createEnemies()
 
     def draw(self):
         for index in range(len(self.enemies)):
@@ -100,6 +101,9 @@ class EnemieManage:
                             self.board = Stage.STAGE_2.value
                         case 3:
                             self.board = Stage.STAGE_3.value
+                        case 4:
+                            self.board = Stage.STAGE_4.value
+                            self.arrivedFinalStage = True
                     self.createEnemies()
             self.lastTimeMoved = pygame.time.get_ticks()
 
@@ -125,3 +129,6 @@ class EnemieManage:
         self.lastDirectionBeforeDown = None
         self.needDown = False
         self.timeToMove = 1000
+
+    def isGameOver(self):
+        return self.arrivedFinalStage

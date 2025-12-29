@@ -37,6 +37,7 @@ class Player:
 
         if BulletManager.checkCollision(self):
             self.rect = pygame.Rect(50, 500, 25, 25)
+            self.life -= 1
 
     def __move(self, plusX=0):
         if self.current_time - self.lastTimeMove > self.timeToMove:
@@ -46,3 +47,6 @@ class Player:
             height = self.rect.height
             self.rect.update(x, y, width, height)
             self.lastTimeMove = self.current_time
+
+    def isAlive(self):
+        return self.life > 0
